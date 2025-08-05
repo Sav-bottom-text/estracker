@@ -17,82 +17,77 @@
     <style>
         /* CSS Variables and Theme System */
         :root {
-            --background: hsl(240, 10%, 97%);
-            --foreground: hsl(222.2, 84%, 4.9%);
-            --muted: hsl(210, 40%, 96%);
-            --muted-foreground: hsl(215.4, 16.3%, 46.9%);
-            --popover: hsl(0, 0%, 100%);
-            --popover-foreground: hsl(222.2, 84%, 4.9%);
-            --card: hsl(0, 0%, 100%);
-            --card-foreground: hsl(222.2, 84%, 4.9%);
-            --border: hsl(214.3, 31.8%, 91.4%);
-            --input: hsl(214.3, 31.8%, 91.4%);
-            --primary: hsl(207, 90%, 54%);
-            --primary-foreground: hsl(210, 40%, 98%);
-            --secondary: hsl(210, 40%, 96%);
-            --secondary-foreground: hsl(222.2, 84%, 4.9%);
-            --accent: hsl(210, 40%, 96%);
-            --accent-foreground: hsl(222.2, 84%, 4.9%);
-            --destructive: hsl(0, 84.2%, 60.2%);
-            --destructive-foreground: hsl(210, 40%, 98%);
-            --ring: hsl(207, 90%, 54%);
+            --background: 240, 10%, 97%;
+            --foreground: 222.2, 84%, 4.9%;
+            --muted: 210, 40%, 96%;
+            --muted-foreground: 215.4, 16.3%, 46.9%;
+            --card: 0, 0%, 100%;
+            --card-foreground: 222.2, 84%, 4.9%;
+            --border: 214.3, 31.8%, 91.4%;
+            --input: 214.3, 31.8%, 91.4%;
+            --primary: 207, 90%, 54%;
+            --primary-foreground: 210, 40%, 98%;
+            --secondary: 210, 40%, 96%;
+            --secondary-foreground: 222.2, 84%, 4.9%;
+            --accent: 210, 40%, 96%;
+            --accent-foreground: 222.2, 84%, 4.9%;
+            --destructive: 0, 84.2%, 60.2%;
+            --destructive-foreground: 210, 40%, 98%;
+            --ring: 207, 90%, 54%;
             --radius: 0.75rem;
             
             /* Theme colors */
-            --theme-gradient-from: hsl(240, 10%, 97%);
-            --theme-gradient-to: hsl(214, 100%, 97%);
-            --header-bg: hsl(0, 0%, 100%);
-            --dashboard-gradient-from: hsl(229, 84%, 62%);
-            --dashboard-gradient-via: hsl(262, 83%, 62%);
-            --dashboard-gradient-to: hsl(330, 81%, 60%);
+            --theme-gradient-from: #f8fafc;
+            --theme-gradient-to: #e0f2fe;
+            --header-bg: #ffffff;
+            --dashboard-gradient-from: #667eea;
+            --dashboard-gradient-via: #764ba2;
+            --dashboard-gradient-to: #f093fb;
         }
 
         .dark {
-            --background: hsl(222.2, 84%, 4.9%);
-            --foreground: hsl(210, 40%, 98%);
-            --muted: hsl(217.2, 32.6%, 17.5%);
-            --muted-foreground: hsl(215, 20.2%, 65.1%);
-            --popover: hsl(222.2, 84%, 4.9%);
-            --popover-foreground: hsl(210, 40%, 98%);
-            --card: hsl(222.2, 84%, 4.9%);
-            --card-foreground: hsl(210, 40%, 98%);
-            --border: hsl(217.2, 32.6%, 17.5%);
-            --input: hsl(217.2, 32.6%, 17.5%);
-            --primary: hsl(207, 90%, 54%);
-            --primary-foreground: hsl(222.2, 84%, 4.9%);
-            --secondary: hsl(217.2, 32.6%, 17.5%);
-            --secondary-foreground: hsl(210, 40%, 98%);
-            --accent: hsl(217.2, 32.6%, 17.5%);
-            --accent-foreground: hsl(210, 40%, 98%);
-            --destructive: hsl(0, 62.8%, 30.6%);
-            --destructive-foreground: hsl(210, 40%, 98%);
-            --ring: hsl(207, 90%, 54%);
+            --background: 222.2, 84%, 4.9%;
+            --foreground: 210, 40%, 98%;
+            --muted: 217.2, 32.6%, 17.5%;
+            --muted-foreground: 215, 20.2%, 65.1%;
+            --card: 222.2, 84%, 4.9%;
+            --card-foreground: 210, 40%, 98%;
+            --border: 217.2, 32.6%, 17.5%;
+            --input: 217.2, 32.6%, 17.5%;
+            --primary: 207, 90%, 54%;
+            --primary-foreground: 222.2, 84%, 4.9%;
+            --secondary: 217.2, 32.6%, 17.5%;
+            --secondary-foreground: 210, 40%, 98%;
+            --accent: 217.2, 32.6%, 17.5%;
+            --accent-foreground: 210, 40%, 98%;
+            --destructive: 0, 62.8%, 30.6%;
+            --destructive-foreground: 210, 40%, 98%;
             
             /* Dark theme colors */
-            --theme-gradient-from: hsl(222.2, 84%, 4.9%);
-            --theme-gradient-to: hsl(217.2, 32.6%, 17.5%);
-            --header-bg: hsl(222.2, 84%, 4.9%);
-            --dashboard-gradient-from: hsl(229, 84%, 45%);
-            --dashboard-gradient-via: hsl(262, 83%, 45%);
-            --dashboard-gradient-to: hsl(330, 81%, 45%);
+            --theme-gradient-from: #0f172a;
+            --theme-gradient-to: #1e293b;
+            --header-bg: #0f172a;
+            --dashboard-gradient-from: #4c51bf;
+            --dashboard-gradient-via: #553c9a;
+            --dashboard-gradient-to: #b83280;
         }
 
         .theme-cozy {
-            --theme-gradient-from: hsl(24, 100%, 97%);
-            --theme-gradient-to: hsl(0, 100%, 97%);
-            --header-bg: hsl(0, 0%, 100%);
-            --dashboard-gradient-from: hsl(24, 74%, 58%);
-            --dashboard-gradient-via: hsl(7, 89%, 67%);
-            --dashboard-gradient-to: hsl(346, 87%, 65%);
+            --theme-gradient-from: #fef3c7;
+            --theme-gradient-to: #fed7d7;
+            --header-bg: #ffffff;
+            --dashboard-gradient-from: #f6ad55;
+            --dashboard-gradient-via: #fc8181;
+            --dashboard-gradient-to: #f56565;
         }
 
         .theme-ocean {
-            --theme-gradient-from: hsl(195, 100%, 97%);
-            --theme-gradient-to: hsl(188, 100%, 97%);
-            --header-bg: hsl(0, 0%, 100%);
-            --dashboard-gradient-from: hsl(195, 100%, 62%);
-            --dashboard-gradient-via: hsl(188, 100%, 62%);
-            --dashboard-gradient-to: hsl(200, 100%, 62%);
+            --theme-gradient-from: #e0f7fa;
+            --theme-gradient-to: #b2ebf2;
+            --header-bg: #ffffff;
+            --dashboard-gradient-from: #06b6d4;
+            --dashboard-gradient-via: #14b8a6;
+            --dashboard-gradient-to: #0891b2;
         }
 
         /* Base Styles */
@@ -110,13 +105,8 @@
             transition: all 0.5s ease;
         }
 
-        .font-inter {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
 
         /* Animation Control */
         .no-animations * {
@@ -128,6 +118,7 @@
         .hidden { display: none; }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
+        .flex-1 { flex: 1 1 0%; }
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .justify-between { justify-content: space-between; }
@@ -176,6 +167,7 @@
         .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
         .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
         .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .pb-24 { padding-bottom: 6rem; }
         .mb-2 { margin-bottom: 0.5rem; }
         .mb-3 { margin-bottom: 0.75rem; }
         .mb-4 { margin-bottom: 1rem; }
@@ -207,6 +199,8 @@
         .top-0 { top: 0; }
         .bottom-6 { bottom: 1.5rem; }
         .right-6 { right: 1.5rem; }
+        .right-0 { right: 0; }
+        .top-full { top: 100%; }
         .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
         .z-40 { z-index: 40; }
         .z-50 { z-index: 50; }
@@ -215,10 +209,9 @@
         .overflow-y-auto { overflow-y: auto; }
         .cursor-pointer { cursor: pointer; }
         .select-none { user-select: none; }
-        .transform { transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
-        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-        .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-        .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .transition-all { transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+        .transition-colors { transition: color 0.15s, background-color 0.15s, border-color 0.15s; }
+        .transition-transform { transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
         .duration-200 { transition-duration: 200ms; }
         .duration-300 { transition-duration: 300ms; }
         .duration-500 { transition-duration: 500ms; }
@@ -298,6 +291,7 @@
             cursor: pointer;
             border: none;
             text-decoration: none;
+            outline: none;
         }
 
         .btn-primary {
@@ -357,10 +351,10 @@
             background: hsl(var(--card));
             color: hsl(var(--foreground));
             font-size: 0.875rem;
+            outline: none;
         }
 
         .input:focus {
-            outline: none;
             border-color: hsl(var(--primary));
             box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
         }
@@ -376,6 +370,7 @@
             font-size: 0.875rem;
             appearance: none;
             cursor: pointer;
+            outline: none;
         }
 
         /* Modal Styles */
@@ -590,9 +585,6 @@
             transform: scale(1.1);
         }
 
-        /* Flex utilities */
-        .flex-1 { flex: 1 1 0%; }
-
         /* Line through */
         .line-through { text-decoration: line-through; }
 
@@ -731,7 +723,7 @@
                                     00:00:00
                                 </span>
                                 <button class="btn btn-outline btn-sm text-xs bg-red-100 text-red-600 border-red-200 hover:bg-red-200" 
-                                        data-testid="button-reset-now" onclick="resetAllItems(false)">
+                                        data-testid="button-reset-now" onclick="resetAllItems()">
                                     Reset Now
                                 </button>
                             </div>
@@ -983,19 +975,34 @@
         }
 
         function saveState() {
-            localStorage.setItem('essentialTracker', JSON.stringify(appState));
+            try {
+                localStorage.setItem('essentialTracker', JSON.stringify({
+                    ...appState,
+                    expandedCategories: Array.from(appState.expandedCategories)
+                }));
+            } catch (e) {
+                console.error('Failed to save state:', e);
+            }
         }
 
         function loadState() {
-            const saved = localStorage.getItem('essentialTracker');
-            if (saved) {
-                const loaded = JSON.parse(saved);
-                appState = { ...appState, ...loaded };
-                
-                // Ensure unsorted category exists
-                if (!appState.categories.find(cat => cat.id === 'unsorted')) {
-                    appState.categories.unshift({ id: 'unsorted', name: 'Unsorted', color: '#6B7280', isSpecial: true });
+            try {
+                const saved = localStorage.getItem('essentialTracker');
+                if (saved) {
+                    const loaded = JSON.parse(saved);
+                    appState = { 
+                        ...appState, 
+                        ...loaded,
+                        expandedCategories: new Set(loaded.expandedCategories || [])
+                    };
+                    
+                    // Ensure unsorted category exists
+                    if (!appState.categories.find(cat => cat.id === 'unsorted')) {
+                        appState.categories.unshift({ id: 'unsorted', name: 'Unsorted', color: '#6B7280', isSpecial: true });
+                    }
                 }
+            } catch (e) {
+                console.error('Failed to load state:', e);
             }
         }
 
@@ -1010,7 +1017,9 @@
             document.getElementById('toast-container').appendChild(toast);
             
             setTimeout(() => {
-                toast.remove();
+                if (toast.parentNode) {
+                    toast.remove();
+                }
             }, 3000);
         }
 
@@ -1026,7 +1035,7 @@
             else greeting = "Good Evening!";
             document.getElementById('greeting').textContent = greeting;
             
-            // Update date
+            // Update date (DD/MM/YY format)
             const day = String(now.getDate()).padStart(2, '0');
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const year = String(now.getFullYear()).slice(-2);
@@ -1050,9 +1059,6 @@
                 timeString = `${String(displayHours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
             }
             document.getElementById('current-time').textContent = timeString;
-            
-            // Update time format button
-            document.getElementById('time-format-btn').textContent = appState.settings.hourFormat ? '24H' : '12H';
         }
 
         function calculateNextResetTime() {
@@ -1079,7 +1085,7 @@
                 document.getElementById('reset-timer').textContent = "00:00:00";
                 // Auto reset when time reached
                 resetAllItems(true);
-                calculateNextResetTime(); // Set next reset time
+                calculateNextResetTime();
                 return;
             }
             
@@ -1093,14 +1099,15 @@
 
         // Theme functions
         function applyTheme() {
+            // Remove all theme classes
             document.body.className = document.body.className.replace(/theme-\w+/g, '');
-            if (appState.settings.theme !== 'light') {
-                document.body.classList.add(`theme-${appState.settings.theme}`);
-            }
+            document.documentElement.classList.remove('dark');
+            
+            // Apply theme
             if (appState.settings.theme === 'dark') {
                 document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
+            } else if (appState.settings.theme !== 'light') {
+                document.body.classList.add(`theme-${appState.settings.theme}`);
             }
             
             // Apply animations setting
@@ -1109,6 +1116,9 @@
             } else {
                 document.body.classList.remove('no-animations');
             }
+            
+            // Update time format button
+            document.getElementById('time-format-btn').textContent = appState.settings.hourFormat ? '24H' : '12H';
         }
 
         function selectTheme(theme) {
@@ -1133,12 +1143,14 @@
 
         function toggleHourFormat(enabled) {
             appState.settings.hourFormat = enabled;
+            applyTheme();
             saveState();
         }
 
         function toggleTimeFormat() {
             appState.settings.hourFormat = !appState.settings.hourFormat;
             document.getElementById('hour-format-toggle').checked = appState.settings.hourFormat;
+            applyTheme();
             saveState();
         }
 
@@ -1302,6 +1314,7 @@
                 appState.expandedCategories.add(categoryId);
             }
             renderCategories();
+            saveState();
         }
 
         function editCategory(categoryId) {
@@ -1384,8 +1397,8 @@
             }
         }
 
-        function resetAllItems(sendNotification = false) {
-            if (!sendNotification && !confirm('Reset all items? This will uncheck everything.')) {
+        function resetAllItems(isAutomatic = false) {
+            if (!isAutomatic && !confirm('Reset all items? This will uncheck everything.')) {
                 return;
             }
             
@@ -1396,7 +1409,7 @@
             renderCategories();
             updateProgress();
             
-            if (sendNotification) {
+            if (isAutomatic) {
                 sendBrowserNotification('Essential Tracker', 'Daily essentials have been reset. Time to check your items!');
                 showToast('Daily essentials automatically reset');
             } else {
@@ -1618,32 +1631,41 @@
 
         // Initialize app
         function initApp() {
-            loadState();
-            applyTheme();
-            calculateNextResetTime();
-            updateDateTime();
-            updateProgress();
-            renderCategories();
-            updateCategorySelect();
-            requestNotificationPermission();
-            
-            // Update notification time display
-            document.getElementById('notification-time').textContent = appState.settings.notificationTime;
-            
-            // Show app, hide loading
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            
-            // Initialize Lucide icons
-            lucide.createIcons();
-            
-            // Start intervals
-            setInterval(updateDateTime, 1000);
-            setInterval(updateResetTimer, 1000);
+            try {
+                loadState();
+                applyTheme();
+                calculateNextResetTime();
+                updateDateTime();
+                updateProgress();
+                renderCategories();
+                updateCategorySelect();
+                requestNotificationPermission();
+                
+                // Update notification time display
+                document.getElementById('notification-time').textContent = appState.settings.notificationTime;
+                
+                // Show app, hide loading
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                
+                // Initialize Lucide icons
+                lucide.createIcons();
+                
+                // Start intervals
+                setInterval(updateDateTime, 1000);
+                setInterval(updateResetTimer, 1000);
+            } catch (e) {
+                console.error('Failed to initialize app:', e);
+                document.getElementById('loading').innerHTML = '<div class="text-red-600">Failed to load app. Please refresh the page.</div>';
+            }
         }
 
         // Start the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
