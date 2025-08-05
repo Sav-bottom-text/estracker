@@ -103,6 +103,8 @@
             color: hsl(var(--foreground));
             min-height: 100vh;
             transition: all 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .font-inter { font-family: 'Inter', sans-serif; }
@@ -115,7 +117,7 @@
         }
 
         /* Utility Classes */
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .flex-1 { flex: 1 1 0%; }
@@ -383,6 +385,14 @@
             justify-content: center;
             z-index: 100;
             padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
         }
 
         .modal-content {
@@ -394,6 +404,12 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
         }
 
         /* Checkbox Styles */
@@ -503,6 +519,12 @@
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             z-index: 100;
             min-width: 300px;
+            transform: translateX(110%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
         }
 
         .toast.success {
@@ -593,6 +615,29 @@
         .opacity-80 { opacity: 0.8; }
         .opacity-90 { opacity: 0.9; }
 
+        /* Loading Screen */
+        #loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            z-index: 1000;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #app {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #app.ready {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Responsive design improvements */
         @media (max-width: 768px) {
             .modal-content {
@@ -615,12 +660,12 @@
 </head>
 <body>
     <!-- Loading Screen -->
-    <div id="loading" class="min-h-screen flex items-center justify-center">
+    <div id="loading">
         <div class="animate-spin-slow w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
     </div>
 
     <!-- Main App -->
-    <div id="app" class="min-h-screen hidden">
+    <div id="app" class="min-h-screen">
         <!-- App Bar -->
         <header class="header-bg shadow-lg border-b border-border sticky top-0 z-50 transition-all duration-300">
             <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -782,7 +827,7 @@
     </div>
 
     <!-- Add Item Modal -->
-    <div id="add-item-modal" class="modal-overlay hidden" data-testid="modal-add-item">
+    <div id="add-item-modal" class="modal-overlay" data-testid="modal-add-item">
         <div class="modal-content">
             <h2 class="text-2xl font-inter font-bold mb-4">Add Essential Item</h2>
             <form id="add-item-form" class="space-y-4">
@@ -813,7 +858,7 @@
     </div>
 
     <!-- Add Category Modal -->
-    <div id="add-category-modal" class="modal-overlay hidden" data-testid="modal-add-category">
+    <div id="add-category-modal" class="modal-overlay" data-testid="modal-add-category">
         <div class="modal-content">
             <h2 class="text-2xl font-inter font-bold mb-4">Add Category</h2>
             <form id="add-category-form" class="space-y-4">
@@ -852,7 +897,7 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="modal-overlay hidden" data-testid="modal-settings">
+    <div id="settings-modal" class="modal-overlay" data-testid="modal-settings">
         <div class="modal-content">
             <h2 class="text-2xl font-inter font-bold mb-4">Settings</h2>
             <div class="space-y-6">
@@ -931,7 +976,7 @@
     </div>
 
     <!-- Edit Notification Modal -->
-    <div id="edit-notification-modal" class="modal-overlay hidden" data-testid="modal-edit-notification">
+    <div id="edit-notification-modal" class="modal-overlay" data-testid="modal-edit-notification">
         <div class="modal-content">
             <h2 class="text-2xl font-inter font-bold mb-4">Edit Notification Time</h2>
             <form id="edit-notification-form" class="space-y-4">
@@ -1007,6 +1052,7 @@
         }
 
         function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
@@ -1014,12 +1060,21 @@
                 <div class="text-sm text-muted-foreground mt-1">${message}</div>
             `;
             
-            document.getElementById('toast-container').appendChild(toast);
+            toastContainer.appendChild(toast);
             
+            // Show toast
             setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.remove();
-                }
+                toast.classList.add('show');
+            }, 10);
+            
+            // Remove toast after delay
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 300);
             }, 3000);
         }
 
@@ -1447,20 +1502,30 @@
         }
 
         // Modal functions
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add('active');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('active');
+        }
+
         function openAddItem() {
             updateCategorySelect();
-            document.getElementById('add-item-modal').classList.remove('hidden');
+            openModal('add-item-modal');
             document.getElementById('item-name').focus();
         }
 
         function closeAddItem() {
-            document.getElementById('add-item-modal').classList.add('hidden');
+            closeModal('add-item-modal');
             document.getElementById('add-item-form').reset();
         }
 
         function openAddCategory() {
             selectedCategoryColor = '#EF4444';
-            document.getElementById('add-category-modal').classList.remove('hidden');
+            openModal('add-category-modal');
             document.getElementById('category-name').focus();
         }
 
@@ -1470,7 +1535,7 @@
         }
 
         function closeAddCategory() {
-            document.getElementById('add-category-modal').classList.add('hidden');
+            closeModal('add-category-modal');
             document.getElementById('add-category-form').reset();
             selectedCategoryColor = '#EF4444';
             document.querySelectorAll('.color-option').forEach((option, index) => {
@@ -1487,20 +1552,20 @@
             document.getElementById('hour-format-toggle').checked = appState.settings.hourFormat;
             document.getElementById('notification-time-input').value = appState.settings.notificationTime;
             
-            document.getElementById('settings-modal').classList.remove('hidden');
+            openModal('settings-modal');
         }
 
         function closeSettings() {
-            document.getElementById('settings-modal').classList.add('hidden');
+            closeModal('settings-modal');
         }
 
         function openEditNotification() {
             document.getElementById('edit-notification-time').value = appState.settings.notificationTime;
-            document.getElementById('edit-notification-modal').classList.remove('hidden');
+            openModal('edit-notification-modal');
         }
 
         function closeEditNotification() {
-            document.getElementById('edit-notification-modal').classList.add('hidden');
+            closeModal('edit-notification-modal');
         }
 
         function toggleMenu() {
@@ -1609,7 +1674,8 @@
         // Close modals when clicking outside
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('modal-overlay')) {
-                e.target.classList.add('hidden');
+                const modal = e.target;
+                modal.classList.remove('active');
             }
             
             // Close menu dropdown when clicking outside
@@ -1623,7 +1689,7 @@
             if (e.key === 'Escape') {
                 // Close any open modals
                 document.querySelectorAll('.modal-overlay').forEach(modal => {
-                    modal.classList.add('hidden');
+                    modal.classList.remove('active');
                 });
                 document.getElementById('menu-dropdown').classList.add('hidden');
             }
@@ -1644,19 +1710,22 @@
                 // Update notification time display
                 document.getElementById('notification-time').textContent = appState.settings.notificationTime;
                 
-                // Show app, hide loading
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('app').classList.remove('hidden');
-                
                 // Initialize Lucide icons
                 lucide.createIcons();
                 
                 // Start intervals
                 setInterval(updateDateTime, 1000);
                 setInterval(updateResetTimer, 1000);
+                
+                // Show app after initialization
+                setTimeout(() => {
+                    document.getElementById('app').classList.add('ready');
+                    document.getElementById('loading').style.opacity = '0';
+                    document.getElementById('loading').style.visibility = 'hidden';
+                }, 300);
             } catch (e) {
                 console.error('Failed to initialize app:', e);
-                document.getElementById('loading').innerHTML = '<div class="text-red-600">Failed to load app. Please refresh the page.</div>';
+                document.getElementById('loading').innerHTML = '<div class="text-red-600 text-center p-6">Failed to load app. Please refresh the page.</div>';
             }
         }
 
