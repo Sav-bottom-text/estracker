@@ -1,1029 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Essential Tracker</title>
-  <meta name="description" content="A mobile-optimized web app for tracking daily essentials with customizable categories, automatic daily resets, and notification reminders">
-  <style>
-    :root {
-      --background: hsl(0, 0%, 100%);
-      --foreground: hsl(213, 38%, 13%);
-      --muted: hsl(220, 4%, 96%);
-      --muted-foreground: hsl(215, 16%, 47%);
-      --border: hsl(220, 13%, 91%);
-      --primary: hsl(207, 90%, 54%);
-      --primary-foreground: hsl(0, 0%, 100%);
-      --success: hsl(120, 61%, 50%);
-      --destructive: hsl(0, 84%, 60%);
-    }
-
-    .dark {
-      --background: hsl(240, 10%, 4%);
-      --foreground: hsl(0, 0%, 98%);
-      --muted: hsl(240, 4%, 16%);
-      --muted-foreground: hsl(240, 5%, 65%);
-      --border: hsl(240, 4%, 16%);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--background);
-      color: var(--foreground);
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: 28rem;
-      margin: 0 auto;
-      min-height: 100vh;
-      background: white;
-    }
-
-    .header {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    }
-
-    .header-content {
-      padding: 1rem;
-    }
-
-    .header h1 {
-      font-size: 1.25rem;
-      font-weight: 500;
-    }
-
-    .time-display {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .time-info {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-    }
-
-    .time-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .time-item {
-      text-align: center;
-    }
-
-    .time-label {
-      font-size: 0.875rem;
-      color: var(--muted-foreground);
-    }
-
-    .time-value {
-      font-size: 1.125rem;
-      font-weight: 500;
-    }
-
-    .btn {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 0.375rem;
-      background: white;
-      cursor: pointer;
-      font-size: 0.75rem;
-      transition: background-color 0.2s;
-    }
-
-    .btn:hover {
-      background: var(--muted);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: var(--primary-foreground);
-      border-color: var(--primary);
-    }
-
-    .notification-setting {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem;
-      background: var(--muted);
-      border-radius: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .notification-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .notification-details {
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-
-    .notification-subtitle {
-      font-size: 0.75rem;
-      color: var(--muted-foreground);
-    }
-
-    .notification-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .reset-timer {
-      padding: 0.75rem;
-      background: rgb(254 243 199);
-      border: 1px solid rgb(251 191 36);
-      border-radius: 0.5rem;
-    }
-
-    .reset-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .reset-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .reset-title {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: rgb(146 64 14);
-    }
-
-    .reset-time {
-      font-size: 0.75rem;
-      color: rgb(180 83 9);
-    }
-
-    .categories {
-      padding: 1rem;
-      padding-bottom: 5rem;
-    }
-
-    .category {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    }
-
-    .category-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .category-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .category-name {
-      font-weight: 500;
-    }
-
-    .category-count {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      background: var(--primary);
-      color: var(--primary-foreground);
-    }
-
-    .category-actions {
-      display: flex;
-      gap: 0.25rem;
-    }
-
-    .icon-btn {
-      padding: 0.5rem;
-      border: none;
-      background: none;
-      cursor: pointer;
-      border-radius: 9999px;
-      color: var(--muted-foreground);
-      transition: background-color 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: var(--muted);
-    }
-
-    .icon-btn.delete {
-      color: var(--destructive);
-    }
-
-    .icon-btn.delete:hover {
-      background: rgb(254 242 242);
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
-      transition: background-color 0.2s;
-    }
-
-    .item:last-child {
-      border-bottom: none;
-    }
-
-    .item:hover {
-      background: var(--muted);
-    }
-
-    .item-content {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-    }
-
-    .checkbox {
-      width: 1.25rem;
-      height: 1.25rem;
-      border: 2px solid var(--border);
-      border-radius: 0.25rem;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .checkbox.checked {
-      background: var(--success);
-      border-color: var(--success);
-    }
-
-    .checkbox.checked::after {
-      content: '✓';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 0.875rem;
-      font-weight: bold;
-    }
-
-    .item-name {
-      transition: all 0.2s;
-    }
-
-    .item-name.checked {
-      text-decoration: line-through;
-      color: var(--muted-foreground);
-    }
-
-    .fab {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 3.5rem;
-      height: 3.5rem;
-      border-radius: 50%;
-      background: var(--primary);
-      color: var(--primary-foreground);
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      z-index: 50;
-    }
-
-    .fab:hover {
-      background: hsl(207, 90%, 48%);
-      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-
-    .modal.open {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 0.5rem;
-      width: 90%;
-      max-width: 28rem;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-    }
-
-    .modal-body {
-      padding: 1rem;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-
-    .form-input, .form-select {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .form-row .form-group {
-      flex: 1;
-    }
-
-    .modal-footer {
-      padding: 1rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted-foreground);
-    }
-
-    .empty-icon {
-      font-size: 4rem;
-      opacity: 0.5;
-      margin-bottom: 0.75rem;
-    }
-
-    .empty-title {
-      font-size: 1.125rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-
-    .empty-description {
-      font-size: 0.875rem;
-    }
-
-    /* Category colors */
-    .category.blue { background: rgb(239 246 255); border-color: rgb(191 219 254); }
-    .category.blue .category-icon { color: rgb(37 99 235); }
-    .category.green { background: rgb(240 253 244); border-color: rgb(187 247 208); }
-    .category.green .category-icon { color: rgb(34 197 94); }
-    .category.yellow { background: rgb(254 249 195); border-color: rgb(254 240 138); }
-    .category.yellow .category-icon { color: rgb(202 138 4); }
-    .category.purple { background: rgb(250 245 255); border-color: rgb(221 214 254); }
-    .category.purple .category-icon { color: rgb(147 51 234); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essential Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-content">
-        <h1>Essential Tracker</h1>
-      </div>
-    </header>
-
-    <!-- Time Display -->
-    <div class="time-display">
-      <div class="time-info">
-        <div class="time-section">
-          <div class="time-item">
-            <div class="time-label">Date</div>
-            <div class="time-value" id="current-date">03/08/25</div>
-          </div>
-          <div class="time-item">
-            <div class="time-label">Time</div>
-            <div class="time-value" id="current-time">12:00</div>
-          </div>
-        </div>
-        <button class="btn" id="clock-toggle">24H</button>
-      </div>
-
-      <div class="notification-setting">
-        <div class="notification-info">
-          <span style="font-size: 1.25rem;">🔔</span>
-          <div>
-            <div class="notification-details">Notification Time</div>
-            <div class="notification-subtitle">Daily reminder</div>
-          </div>
-        </div>
-        <div class="notification-actions">
-          <span id="notification-time">08:00</span>
-          <button class="icon-btn" id="edit-notification">✏️</button>
-        </div>
-      </div>
-
-      <div class="reset-timer">
-        <div class="reset-content">
-          <div class="reset-info">
-            <span>🔄</span>
-            <div>
-              <div class="reset-title">Next Reset</div>
-              <div class="reset-time" id="reset-countdown">12h 30m remaining</div>
+    <div class="app-container">
+        <!-- App Bar -->
+        <header class="app-bar">
+            <h1>Essential Tracker</h1>
+            <div class="header-actions">
+                <button class="menu-btn" id="menuBtn">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
             </div>
-          </div>
-          <button class="btn" id="reset-now">Reset Now</button>
-        </div>
-      </div>
-    </div>
+        </header>
 
-    <!-- Categories -->
-    <div class="categories" id="categories-container">
-      <!-- Categories will be rendered here -->
-    </div>
-
-    <!-- Floating Action Button -->
-    <button class="fab" id="add-item-btn">+</button>
-  </div>
-
-  <!-- Add Item Modal -->
-  <div class="modal" id="add-item-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Add New Essential</h2>
-      </div>
-      <div class="modal-body">
-        <form id="add-item-form">
-          <div class="form-group">
-            <label class="form-label">Item Name</label>
-            <input type="text" class="form-input" id="item-name" placeholder="e.g., Laptop, House Keys...">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-select" id="item-category">
-              <option value="">Select a category</option>
-              <option value="new">+ Create New Category</option>
-            </select>
-          </div>
-          <div id="new-category-fields" style="display: none;">
-            <div class="form-group">
-              <label class="form-label">New Category Name</label>
-              <input type="text" class="form-input" id="new-category-name" placeholder="e.g., Work Items">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Icon</label>
-                <select class="form-select" id="new-category-icon">
-                  <option value="laptop">💻 Laptop</option>
-                  <option value="utensils">🍴 Utensils</option>
-                  <option value="key">🔑 Key</option>
-                  <option value="box">📦 Box</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Color</label>
-                <select class="form-select" id="new-category-color">
-                  <option value="blue">🔵 Blue</option>
-                  <option value="green">🟢 Green</option>
-                  <option value="yellow">🟡 Yellow</option>
-                  <option value="purple">🟣 Purple</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" id="cancel-add">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-item">Add Item</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Category Modal -->
-  <div class="modal" id="edit-category-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Edit Category</h2>
-      </div>
-      <div class="modal-body">
-        <form id="edit-category-form">
-          <div class="form-group">
-            <label class="form-label">Category Name</label>
-            <input type="text" class="form-input" id="edit-category-name">
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Icon</label>
-              <select class="form-select" id="edit-category-icon">
-                <option value="laptop">💻 Laptop</option>
-                <option value="utensils">🍴 Utensils</option>
-                <option value="key">🔑 Key</option>
-                <option value="box">📦 Box</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Color</label>
-              <select class="form-select" id="edit-category-color">
-                <option value="blue">🔵 Blue</option>
-                <option value="green">🟢 Green</option>
-                <option value="yellow">🟡 Yellow</option>
-                <option value="purple">🟣 Purple</option>
-              </select>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" id="cancel-edit-category">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-category">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Item Modal -->
-  <div class="modal" id="edit-item-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Edit Item</h2>
-      </div>
-      <div class="modal-body">
-        <form id="edit-item-form">
-          <div class="form-group">
-            <label class="form-label">Item Name</label>
-            <input type="text" class="form-input" id="edit-item-name">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-select" id="edit-item-category">
-              <option value="">Select a category</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" id="cancel-edit-item">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-item-edit">Save Changes</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Notification Time Modal -->
-  <div class="modal" id="notification-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Set Notification Time</h2>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <input type="time" class="form-input" id="notification-time-input">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" id="cancel-notification">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-notification">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // App state
-    let state = {
-      categories: [
-        { id: '1', name: 'Devices', icon: 'laptop', color: 'blue' },
-        { id: '2', name: 'Food', icon: 'utensils', color: 'green' },
-        { id: '3', name: 'Keys', icon: 'key', color: 'yellow' },
-        { id: '4', name: 'Miscellaneous', icon: 'box', color: 'purple' }
-      ],
-      items: [
-        { id: '1', name: 'Laptop', categoryId: '1', checked: false },
-        { id: '2', name: 'Phone Charger', categoryId: '1', checked: false },
-        { id: '3', name: 'Headphones', categoryId: '1', checked: false },
-        { id: '4', name: 'Rice', categoryId: '2', checked: false },
-        { id: '5', name: 'Curry', categoryId: '2', checked: false },
-        { id: '6', name: 'Snacks', categoryId: '2', checked: false },
-        { id: '7', name: 'Water Bottle', categoryId: '2', checked: false },
-        { id: '8', name: 'House Keys', categoryId: '3', checked: false },
-        { id: '9', name: 'Car Keys', categoryId: '3', checked: false },
-        { id: '10', name: 'Office Keys', categoryId: '3', checked: false },
-        { id: '11', name: 'Wallet', categoryId: '4', checked: false },
-        { id: '12', name: 'Sunglasses', categoryId: '4', checked: false }
-      ],
-      settings: {
-        notificationTime: '08:00',
-        is24HourFormat: true,
-        lastResetDate: new Date().toDateString()
-      },
-      editingCategory: null,
-      editingItem: null
-    };
-
-    // Load state from localStorage
-    function loadState() {
-      const saved = localStorage.getItem('essentialTracker');
-      if (saved) {
-        state = { ...state, ...JSON.parse(saved) };
-      }
-    }
-
-    // Save state to localStorage
-    function saveState() {
-      localStorage.setItem('essentialTracker', JSON.stringify(state));
-    }
-
-    // Generate unique ID
-    function generateId() {
-      return Date.now().toString() + Math.random().toString(36).substr(2, 9);
-    }
-
-    // Icon mapping
-    const iconMap = {
-      laptop: '💻',
-      utensils: '🍴',
-      key: '🔑',
-      box: '📦'
-    };
-
-    // Format time
-    function formatTime(date) {
-      if (state.settings.is24HourFormat) {
-        return date.toLocaleTimeString('en-GB', { 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          hour12: false 
-        });
-      } else {
-        return date.toLocaleTimeString('en-US', { 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          hour12: true 
-        });
-      }
-    }
-
-    // Format date
-    function formatDate(date) {
-      return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      });
-    }
-
-    // Update time display
-    function updateTimeDisplay() {
-      const now = new Date();
-      document.getElementById('current-time').textContent = formatTime(now);
-      document.getElementById('current-date').textContent = formatDate(now);
-      document.getElementById('clock-toggle').textContent = state.settings.is24HourFormat ? '24H' : '12H';
-      document.getElementById('notification-time').textContent = state.settings.notificationTime;
-
-      // Update reset countdown
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
-      
-      const diff = tomorrow.getTime() - now.getTime();
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      
-      document.getElementById('reset-countdown').textContent = `${hours}h ${minutes}m remaining`;
-    }
-
-    // Render categories
-    function renderCategories() {
-      const container = document.getElementById('categories-container');
-      
-      if (state.categories.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📦</div>
-            <div class="empty-title">No essentials yet</div>
-            <div class="empty-description">Tap the + button to add your first essential item</div>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = state.categories.map(category => {
-        const items = state.items.filter(item => item.categoryId === category.id);
-        const icon = iconMap[category.icon] || iconMap.box;
-        
-        return `
-          <div class="category ${category.color}">
-            <div class="category-header">
-              <div class="category-info">
-                <span class="category-icon">${icon}</span>
-                <h3 class="category-name">${category.name}</h3>
-                <span class="category-count">${items.length}</span>
-              </div>
-              <div class="category-actions">
-                <button class="icon-btn" onclick="editCategory('${category.id}')">✏️</button>
-                <button class="icon-btn delete" onclick="deleteCategory('${category.id}')">🗑️</button>
-              </div>
-            </div>
-            ${items.map(item => `
-              <div class="item">
-                <div class="item-content">
-                  <div class="checkbox ${item.checked ? 'checked' : ''}" onclick="toggleItem('${item.id}')"></div>
-                  <span class="item-name ${item.checked ? 'checked' : ''}">${item.name}</span>
+        <!-- Date/Time Display -->
+        <div class="datetime-section">
+            <div class="datetime-info">
+                <div class="date-display" id="dateDisplay"></div>
+                <div class="time-display" id="timeDisplay"></div>
+                <div class="time-format-toggle">
+                    <button id="timeFormatBtn" class="format-btn">12H</button>
                 </div>
-                <div class="category-actions">
-                  <button class="icon-btn" onclick="editItem('${item.id}')">✏️</button>
-                  <button class="icon-btn delete" onclick="deleteItem('${item.id}')">🗑️</button>
+            </div>
+            <div class="notification-section">
+                <div class="notification-time">
+                    <span>Notification: </span>
+                    <span id="notificationTime">08:00</span>
+                    <button id="editNotificationBtn" class="edit-btn">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      }).join('');
-    }
+                <div class="reset-timer">
+                    <span>Next Reset: </span>
+                    <span id="resetTimer">--:--:--</span>
+                </div>
+            </div>
+        </div>
 
-    // Toggle item checked state
-    function toggleItem(itemId) {
-      const item = state.items.find(i => i.id === itemId);
-      if (item) {
-        item.checked = !item.checked;
-        saveState();
-        renderCategories();
-      }
-    }
+        <!-- Categories Container -->
+        <div class="categories-container" id="categoriesContainer">
+            <!-- Categories will be dynamically generated here -->
+        </div>
 
-    // Delete category
-    function deleteCategory(categoryId) {
-      if (confirm('Are you sure you want to delete this category? All items in it will be deleted too.')) {
-        state.categories = state.categories.filter(c => c.id !== categoryId);
-        state.items = state.items.filter(i => i.categoryId !== categoryId);
-        saveState();
-        renderCategories();
-      }
-    }
+        <!-- Floating Action Button -->
+        <button class="fab" id="fabBtn">
+            <i class="fas fa-plus"></i>
+        </button>
 
-    // Delete item
-    function deleteItem(itemId) {
-      if (confirm('Are you sure you want to delete this item?')) {
-        state.items = state.items.filter(i => i.id !== itemId);
-        saveState();
-        renderCategories();
-      }
-    }
+        <!-- FAB Menu -->
+        <div class="fab-menu" id="fabMenu">
+            <button class="fab-option" id="addItemBtn">
+                <i class="fas fa-list"></i>
+                <span>Add Item</span>
+            </button>
+            <button class="fab-option" id="addCategoryBtn">
+                <i class="fas fa-folder"></i>
+                <span>Add Category</span>
+            </button>
+        </div>
 
-    // Edit category
-    function editCategory(categoryId) {
-      const category = state.categories.find(c => c.id === categoryId);
-      if (category) {
-        state.editingCategory = category;
-        document.getElementById('edit-category-name').value = category.name;
-        document.getElementById('edit-category-icon').value = category.icon;
-        document.getElementById('edit-category-color').value = category.color;
-        document.getElementById('edit-category-modal').classList.add('open');
-      }
-    }
+        <!-- Main Menu Dropdown -->
+        <div class="dropdown-menu" id="mainMenu">
+            <button class="menu-item" id="settingsBtn">
+                <i class="fas fa-cog"></i>
+                Settings
+            </button>
+            <button class="menu-item" id="deleteAllItemsBtn">
+                <i class="fas fa-trash"></i>
+                Delete All Items
+            </button>
+            <button class="menu-item" id="deleteAllCategoriesBtn">
+                <i class="fas fa-trash-alt"></i>
+                Delete All Categories
+            </button>
+            <button class="menu-item" id="resetNowBtn">
+                <i class="fas fa-refresh"></i>
+                Reset Now
+            </button>
+        </div>
 
-    // Edit item
-    function editItem(itemId) {
-      const item = state.items.find(i => i.id === itemId);
-      if (item) {
-        state.editingItem = item;
-        document.getElementById('edit-item-name').value = item.name;
-        
-        // Populate category dropdown
-        const select = document.getElementById('edit-item-category');
-        select.innerHTML = '<option value="">Select a category</option>' +
-          state.categories.map(cat => 
-            `<option value="${cat.id}" ${cat.id === item.categoryId ? 'selected' : ''}>${cat.name}</option>`
-          ).join('');
-        
-        document.getElementById('edit-item-modal').classList.add('open');
-      }
-    }
+        <!-- Modals -->
+        <!-- Add Item Modal -->
+        <div class="modal" id="addItemModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Item</h3>
+                    <button class="close-btn" data-modal="addItemModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="itemNameInput" placeholder="Item name" class="input-field">
+                    <select id="itemCategorySelect" class="select-field">
+                        <option value="unsorted">Unsorted</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-modal="addItemModal">Cancel</button>
+                    <button class="btn btn-primary" id="saveItemBtn">Add Item</button>
+                </div>
+            </div>
+        </div>
 
-    // Reset all items
-    function resetAllItems() {
-      if (confirm('Reset all items to unchecked?')) {
-        state.items.forEach(item => item.checked = false);
-        state.settings.lastResetDate = new Date().toDateString();
-        saveState();
-        renderCategories();
-      }
-    }
+        <!-- Add Category Modal -->
+        <div class="modal" id="addCategoryModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Add New Category</h3>
+                    <button class="close-btn" data-modal="addCategoryModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="categoryNameInput" placeholder="Category name" class="input-field">
+                    <div class="color-picker-section">
+                        <label>Choose Color:</label>
+                        <div class="color-options">
+                            <div class="color-option" data-color="#3498db" style="background-color: #3498db;"></div>
+                            <div class="color-option" data-color="#2ecc71" style="background-color: #2ecc71;"></div>
+                            <div class="color-option" data-color="#e74c3c" style="background-color: #e74c3c;"></div>
+                            <div class="color-option" data-color="#f39c12" style="background-color: #f39c12;"></div>
+                            <div class="color-option" data-color="#9b59b6" style="background-color: #9b59b6;"></div>
+                            <div class="color-option" data-color="#1abc9c" style="background-color: #1abc9c;"></div>
+                            <div class="color-option" data-color="#34495e" style="background-color: #34495e;"></div>
+                            <div class="color-option" data-color="#e67e22" style="background-color: #e67e22;"></div>
+                        </div>
+                        <input type="color" id="customColorPicker" class="custom-color-picker">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-modal="addCategoryModal">Cancel</button>
+                    <button class="btn btn-primary" id="saveCategoryBtn">Add Category</button>
+                </div>
+            </div>
+        </div>
 
-    // Update category dropdown in add modal
-    function updateCategoryDropdown() {
-      const select = document.getElementById('item-category');
-      const currentValue = select.value;
-      select.innerHTML = '<option value="">Select a category</option>' +
-        state.categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('') +
-        '<option value="new">+ Create New Category</option>';
-      select.value = currentValue;
-    }
+        <!-- Edit Category Modal -->
+        <div class="modal" id="editCategoryModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Category</h3>
+                    <button class="close-btn" data-modal="editCategoryModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="editCategoryNameInput" placeholder="Category name" class="input-field">
+                    <div class="color-picker-section">
+                        <label>Choose Color:</label>
+                        <div class="color-options" id="editColorOptions">
+                            <div class="color-option" data-color="#3498db" style="background-color: #3498db;"></div>
+                            <div class="color-option" data-color="#2ecc71" style="background-color: #2ecc71;"></div>
+                            <div class="color-option" data-color="#e74c3c" style="background-color: #e74c3c;"></div>
+                            <div class="color-option" data-color="#f39c12" style="background-color: #f39c12;"></div>
+                            <div class="color-option" data-color="#9b59b6" style="background-color: #9b59b6;"></div>
+                            <div class="color-option" data-color="#1abc9c" style="background-color: #1abc9c;"></div>
+                            <div class="color-option" data-color="#34495e" style="background-color: #34495e;"></div>
+                            <div class="color-option" data-color="#e67e22" style="background-color: #e67e22;"></div>
+                        </div>
+                        <input type="color" id="editCustomColorPicker" class="custom-color-picker">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" id="deleteCategoryBtn">Delete</button>
+                    <button class="btn btn-secondary" data-modal="editCategoryModal">Cancel</button>
+                    <button class="btn btn-primary" id="updateCategoryBtn">Update</button>
+                </div>
+            </div>
+        </div>
 
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      loadState();
-      updateTimeDisplay();
-      renderCategories();
-      setInterval(updateTimeDisplay, 1000);
+        <!-- Settings Modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Settings</h3>
+                    <button class="close-btn" data-modal="settingsModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-group">
+                        <label>Theme</label>
+                        <div class="theme-options">
+                            <button class="theme-btn active" data-theme="light">
+                                <i class="fas fa-sun"></i>
+                                Light
+                            </button>
+                            <button class="theme-btn" data-theme="dark">
+                                <i class="fas fa-moon"></i>
+                                Dark
+                            </button>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>Animations</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="animationsToggle">
+                            <span class="slider"></span>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label>Notifications</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="notificationsToggle" checked>
+                                <span class="slider"></span>
+                            </div>
+                            <button class="btn btn-secondary" id="testNotificationBtn" style="padding: 6px 12px; font-size: 0.75rem;">Test</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-modal="settingsModal">Close</button>
+                </div>
+            </div>
+        </div>
 
-      // Clock format toggle
-      document.getElementById('clock-toggle').addEventListener('click', function() {
-        state.settings.is24HourFormat = !state.settings.is24HourFormat;
-        saveState();
-        updateTimeDisplay();
-      });
+        <!-- Edit Notification Time Modal -->
+        <div class="modal" id="editNotificationModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Set Notification Time</h3>
+                    <button class="close-btn" data-modal="editNotificationModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="time" id="notificationTimeInput" class="input-field">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-modal="editNotificationModal">Cancel</button>
+                    <button class="btn btn-primary" id="saveNotificationTimeBtn">Save</button>
+                </div>
+            </div>
+        </div>
 
-      // Notification time edit
-      document.getElementById('edit-notification').addEventListener('click', function() {
-        document.getElementById('notification-time-input').value = state.settings.notificationTime;
-        document.getElementById('notification-modal').classList.add('open');
-      });
+        <!-- Modal Overlay -->
+        <div class="modal-overlay" id="modalOverlay"></div>
+    </div>
 
-      // Reset now button
-      document.getElementById('reset-now').addEventListener('click', resetAllItems);
-
-      // Add item button
-      document.getElementById('add-item-btn').addEventListener('click', function() {
-        updateCategoryDropdown();
-        document.getElementById('add-item-form').reset();
-        document.getElementById('new-category-fields').style.display = 'none';
-        document.getElementById('add-item-modal').classList.add('open');
-      });
-
-      // Category selection change
-      document.getElementById('item-category').addEventListener('change', function() {
-        const newCategoryFields = document.getElementById('new-category-fields');
-        if (this.value === 'new') {
-          newCategoryFields.style.display = 'block';
-        } else {
-          newCategoryFields.style.display = 'none';
-        }
-      });
-
-      // Save item
-      document.getElementById('save-item').addEventListener('click', function() {
-        const itemName = document.getElementById('item-name').value.trim();
-        let categoryId = document.getElementById('item-category').value;
-        
-        if (!itemName) {
-          alert('Please enter an item name');
-          return;
-        }
-
-        // Create new category if needed
-        if (categoryId === 'new') {
-          const newCategoryName = document.getElementById('new-category-name').value.trim();
-          if (!newCategoryName) {
-            alert('Please enter a category name');
-            return;
-          }
-          
-          const newCategory = {
-            id: generateId(),
-            name: newCategoryName,
-            icon: document.getElementById('new-category-icon').value,
-            color: document.getElementById('new-category-color').value
-          };
-          
-          state.categories.push(newCategory);
-          categoryId = newCategory.id;
-        }
-
-        if (!categoryId) {
-          alert('Please select a category');
-          return;
-        }
-
-        // Add new item
-        const newItem = {
-          id: generateId(),
-          name: itemName,
-          categoryId: categoryId,
-          checked: false
-        };
-
-        state.items.push(newItem);
-        saveState();
-        renderCategories();
-        document.getElementById('add-item-modal').classList.remove('open');
-      });
-
-      // Save category edit
-      document.getElementById('save-category').addEventListener('click', function() {
-        const name = document.getElementById('edit-category-name').value.trim();
-        if (!name) {
-          alert('Please enter a category name');
-          return;
-        }
-
-        if (state.editingCategory) {
-          state.editingCategory.name = name;
-          state.editingCategory.icon = document.getElementById('edit-category-icon').value;
-          state.editingCategory.color = document.getElementById('edit-category-color').value;
-          saveState();
-          renderCategories();
-          document.getElementById('edit-category-modal').classList.remove('open');
-        }
-      });
-
-      // Save item edit
-      document.getElementById('save-item-edit').addEventListener('click', function() {
-        const name = document.getElementById('edit-item-name').value.trim();
-        const categoryId = document.getElementById('edit-item-category').value;
-        
-        if (!name) {
-          alert('Please enter an item name');
-          return;
-        }
-        
-        if (!categoryId) {
-          alert('Please select a category');
-          return;
-        }
-
-        if (state.editingItem) {
-          state.editingItem.name = name;
-          state.editingItem.categoryId = categoryId;
-          saveState();
-          renderCategories();
-          document.getElementById('edit-item-modal').classList.remove('open');
-        }
-      });
-
-      // Save notification time
-      document.getElementById('save-notification').addEventListener('click', function() {
-        const time = document.getElementById('notification-time-input').value;
-        if (time) {
-          state.settings.notificationTime = time;
-          saveState();
-          updateTimeDisplay();
-          document.getElementById('notification-modal').classList.remove('open');
-        }
-      });
-
-      // Modal close handlers
-      ['cancel-add', 'cancel-edit-category', 'cancel-edit-item', 'cancel-notification'].forEach(id => {
-        document.getElementById(id).addEventListener('click', function() {
-          document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('open'));
-        });
-      });
-
-      // Close modals when clicking outside
-      document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-          if (e.target === modal) {
-            modal.classList.remove('open');
-          }
-        });
-      });
-    });
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
